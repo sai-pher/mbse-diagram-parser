@@ -13,16 +13,24 @@ A Python library for parsing MBSE text notation and generating Draw.io diagram f
 
 ## Installation
 
+### Core Parser Only
+
 ```bash
 pip install mbse-diagram-parser
 ```
 
-For development installation:
+### With Diagram Generation Support
+
+```bash
+pip install mbse-diagram-parser[generator]
+```
+
+### For Development
 
 ```bash
 git clone https://github.com/sai-pher/mbse-diagram-parser.git
 cd mbse-diagram-parser
-pip install -e ".[dev]"
+pip install -e ".[dev,generator]"
 ```
 
 ## Quick Start
@@ -51,6 +59,34 @@ for connection in diagram.connections:
 # Export to dictionary format
 data = parser.to_dict()
 ```
+
+### Generate Draw.io Diagrams
+
+```python
+from mbse_diagram_parser import MBSEDiagramGenerator, OutputFormat
+
+# Define your system
+notation = """
+{calculator}-O(execute operations)->[results]
+{calculator}-∆{keypad}, {screen}
+"""
+
+# Generate Draw.io diagram
+generator = MBSEDiagramGenerator()
+output_files = generator.generate(
+    notation,
+    filename="my_diagram",
+    output_format=OutputFormat.DRAWIO,
+    output_dir="./output"
+)
+
+print(f"Generated: {output_files}")
+```
+
+**Output Formats:**
+- `OutputFormat.DRAWIO` - Generate .drawio file only
+- `OutputFormat.PNG` - Generate PNG image (requires Draw.io CLI)
+- `OutputFormat.BOTH` - Generate both formats
 
 ## Notation Reference
 

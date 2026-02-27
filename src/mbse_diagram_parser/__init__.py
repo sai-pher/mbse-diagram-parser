@@ -13,6 +13,19 @@ from mbse_diagram_parser.parser import (
     ParsedDiagram,
 )
 
+# Optional: Import generator if drawpyo is available
+try:
+    from mbse_diagram_parser.generator import (
+        MBSEDiagramGenerator,
+        OutputFormat,
+    )
+
+    _GENERATOR_AVAILABLE = True
+except ImportError:
+    _GENERATOR_AVAILABLE = False
+    MBSEDiagramGenerator = None
+    OutputFormat = None
+
 __version__ = "0.1.0"
 
 __all__ = [
@@ -24,3 +37,7 @@ __all__ = [
     "ConnectionType",
     "ParsedDiagram",
 ]
+
+# Add generator classes to __all__ if available
+if _GENERATOR_AVAILABLE:
+    __all__.extend(["MBSEDiagramGenerator", "OutputFormat"])

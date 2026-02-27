@@ -8,8 +8,16 @@ This library provides a simple, text-based notation for defining Model-Based Sys
 
 ## Installation
 
+Core parser only:
+
 ```bash
 pip install mbse-diagram-parser
+```
+
+With diagram generation support:
+
+```bash
+pip install mbse-diagram-parser[generator]
 ```
 
 For development:
@@ -17,7 +25,7 @@ For development:
 ```bash
 git clone https://github.com/sai-pher/mbse-diagram-parser.git
 cd mbse-diagram-parser
-pip install -e ".[dev]"
+pip install -e ".[dev,generator]"
 ```
 
 ## Quick Start
@@ -105,3 +113,51 @@ Container for parsed elements and connections.
 - `add_element(element: Element) -> Element`
 - `add_connection(connection: Connection)`
 - `get_element_by_name(name: str) -> Optional[Element]`
+
+## Diagram Generation
+
+### MBSEDiagramGenerator
+
+Generate Draw.io diagrams from parsed MBSE notation.
+
+**Requirements:** Requires `drawpyo` package. Install with: `pip install mbse-diagram-parser[generator]`
+
+**Methods:**
+
+- `generate(notation: str, filename: str, output_format: OutputFormat, output_dir: str) -> List[str]`
+
+**Example:**
+
+```python
+from mbse_diagram_parser import MBSEDiagramGenerator, OutputFormat
+
+notation = """
+{calculator}-O(execute operations)->[results]
+{calculator}-∆{keypad}, {screen}
+"""
+
+generator = MBSEDiagramGenerator()
+files = generator.generate(
+    notation,
+    filename="my_diagram",
+    output_format=OutputFormat.DRAWIO,
+    output_dir="./output"
+)
+```
+
+### OutputFormat
+
+Enum for output format options:
+
+- `OutputFormat.DRAWIO` - Generate .drawio XML file
+- `OutputFormat.PNG` - Generate PNG image (requires Draw.io CLI)
+- `OutputFormat.BOTH` - Generate both .drawio and PNG files
+
+### Styling
+
+The generator applies consistent styling:
+
+- **Components:** White rectangles with black borders
+- **Processes:** White ovals with black borders
+- **Data:** White rounded rectangles with black borders
+- **Connections:** Black arrows with appropriate end markers

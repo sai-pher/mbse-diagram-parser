@@ -1,0 +1,10 @@
+# Runtime dependencies
+# (none yet - will be added as needed)
+
+# Development dependencies
+pytest>=7.0
+pytest-cov>=4.0
+ruff>=0.4
+black>=24.0
+mkdocs>=1.5
+mkdocs-material>=9.0

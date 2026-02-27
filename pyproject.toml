@@ -1,0 +1,88 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "mbse-diagram-parser"
+version = "0.1.0"
+description = "A Python library for parsing MBSE text notation and generating Draw.io diagram files."
+readme = "README.md"
+license = { text = "MIT" }
+authors = [
+    { name = "sai-pher", email = "sai-pher@users.noreply.github.com" }
+]
+requires-python = ">=3.12"
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+]
+dependencies = []
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0",
+    "pytest-cov>=4.0",
+    "ruff>=0.4",
+    "black>=24.0",
+    "mkdocs>=1.5",
+    "mkdocs-material>=9.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/sai-pher/mbse-diagram-parser"
+Documentation = "https://sai-pher.github.io/mbse-diagram-parser"
+Repository = "https://github.com/sai-pher/mbse-diagram-parser"
+Issues = "https://github.com/sai-pher/mbse-diagram-parser/issues"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.ruff]
+line-length = 88
+target-version = "py312"
+
+[tool.ruff.lint]
+select = [
+    "E",   # pycodestyle errors
+    "W",   # pycodestyle warnings
+    "F",   # pyflakes
+    "I",   # isort
+    "B",   # flake8-bugbear
+    "C4",  # flake8-comprehensions
+    "UP",  # pyupgrade
+]
+ignore = []
+
+[tool.black]
+line-length = 88
+target-version = ["py312"]
+include = '\.pyi?$'
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+addopts = [
+    "--strict-markers",
+    "--strict-config",
+    "--showlocals",
+]
+
+[tool.coverage.run]
+source = ["src/mbse_diagram_parser"]
+branch = true
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "def __repr__",
+    "raise AssertionError",
+    "raise NotImplementedError",
+    "if __name__ == .__main__.:",
+    "if TYPE_CHECKING:",
+]

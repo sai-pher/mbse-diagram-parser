@@ -1,342 +1,131 @@
-# Development Standards for AI Agents
+# Development Standards: C.O.L.D (+S)
 
-This document provides detailed development standards and best practices for AI agents working on the `mbse-diagram-parser` project.
-
-## Code Style and Quality
-
-### Python Style Guide
-
-1. **PEP 8 Compliance**
-   - Follow PEP 8 style guide for Python code
-   - Use `black` for automatic formatting (88 character line length)
-   - Use `ruff` for comprehensive linting
-
-2. **Type Hints**
-   - Use type hints for all function parameters and return values
-   - Use `typing` module types where appropriate (`List`, `Dict`, `Optional`, etc.)
-   - Example:
-     ```python
-     from typing import List, Optional
-
-     def parse_diagram(content: str, validate: bool = True) -> Optional[List[str]]:
-         """Parse diagram content and return list of elements."""
-         pass
-     ```
-
-3. **Docstrings**
-   - Use Google-style docstrings for all public modules, classes, and functions
-   - Include: description, Args, Returns, Raises, Examples
-   - Example:
-     ```python
-     def parse_block(text: str) -> Block:
-         """Parse a block definition from text.
-
-         Args:
-             text: The text containing the block definition.
-
-         Returns:
-             A Block object representing the parsed block.
-
-         Raises:
-             ParseError: If the text cannot be parsed as a valid block.
-
-         Example:
-             >>> block = parse_block("block MySystem {}")
-             >>> block.name
-             'MySystem'
-         """
-         pass
-     ```
-
-### Code Organization
-
-1. **Module Structure**
-   - One class per file for major classes
-   - Group related utility functions in utility modules
-   - Use `__init__.py` to expose public APIs
-
-2. **Import Order**
-   - Standard library imports
-   - Third-party imports
-   - Local application imports
-   - Separate each group with a blank line
-
-3. **Naming Conventions**
-   - Classes: `PascalCase` (e.g., `DiagramParser`, `BlockElement`)
-   - Functions/variables: `snake_case` (e.g., `parse_diagram`, `element_count`)
-   - Constants: `UPPER_SNAKE_CASE` (e.g., `MAX_ELEMENTS`, `DEFAULT_STYLE`)
-   - Private members: prefix with `_` (e.g., `_internal_method`)
-
-## Testing Standards
-
-### Test Structure
-
-1. **Test Organization**
-   - Mirror source structure in tests directory
-   - One test file per source file: `test_<module_name>.py`
-   - Group related tests in classes: `TestClassName`
-
-2. **Test Naming**
-   - Use descriptive names: `test_<function>_<scenario>_<expected>`
-   - Examples:
-     - `test_parse_block_valid_input_returns_block`
-     - `test_parse_block_invalid_syntax_raises_error`
-     - `test_generator_empty_diagram_creates_minimal_xml`
-
-3. **Test Coverage**
-   - Aim for 80%+ code coverage
-   - Test edge cases and error conditions
-   - Test both happy path and failure scenarios
-
-### Test Best Practices
-
-1. **Arrange-Act-Assert Pattern**
-   ```python
-   def test_parse_block_creates_correct_name():
-       # Arrange
-       input_text = "block MySystem {}"
-
-       # Act
-       result = parse_block(input_text)
-
-       # Assert
-       assert result.name == "MySystem"
-   ```
-
-2. **Use Fixtures**
-   - Create pytest fixtures for common test data
-   - Store complex test inputs in `tests/fixtures/`
-   - Store expected outputs in `tests/golden/`
-
-3. **Parametrized Tests**
-   ```python
-   import pytest
-
-   @pytest.mark.parametrize("input,expected", [
-       ("block A {}", "A"),
-       ("block System1 {}", "System1"),
-       ("block MySystem {}", "MySystem"),
-   ])
-   def test_parse_block_names(input, expected):
-       result = parse_block(input)
-       assert result.name == expected
-   ```
-
-## Git Workflow
-
-### Commit Standards
-
-1. **Conventional Commits**
-   - Format: `<type>: <description>`
-   - Types: `feat`, `fix`, `docs`, `chore`, `test`, `refactor`, `perf`
-   - Keep commits atomic and focused
-
-2. **Commit Messages**
-   - First line: concise summary (50 chars max)
-   - Body: explain what and why (not how)
-   - Reference issues when applicable
-
-3. **Commit Examples**
-   ```
-   feat: add parser for sequence diagrams
-
-   Implements lexer and parser for sequence diagram notation.
-   Supports messages, actors, and activation boxes.
-
-   Closes #42
-   ```
-
-### Branch Strategy
-
-1. **Branch Types**
-   - `feature/*` - New features
-   - `fix/*` - Bug fixes
-   - `docs/*` - Documentation updates
-   - `chore/*` - Maintenance tasks
-
-2. **Branch Lifecycle**
-   - Create from `main`
-   - Keep up to date with `main`
-   - Delete after merge
-
-## Documentation Standards
-
-### Code Documentation
-
-1. **Module-Level**
-   - Every module should have a docstring explaining its purpose
-   - List main classes/functions
-
-2. **Class-Level**
-   - Explain the class purpose and responsibility
-   - Document important attributes
-   - Provide usage examples
-
-3. **Function-Level**
-   - Document all parameters and return values
-   - Note any side effects
-   - Include examples for complex functions
-
-### User Documentation
-
-1. **README.md**
-   - Keep concise and focused
-   - Update examples when API changes
-   - Link to full documentation
-
-2. **MkDocs Documentation**
-   - Write tutorials for common use cases
-   - Document all public APIs
-   - Include diagrams and examples
-
-3. **CLAUDE.md**
-   - Update when architecture changes
-   - Document design decisions
-   - List known issues and TODOs
-
-## Error Handling
-
-### Exception Strategy
-
-1. **Custom Exceptions**
-   ```python
-   class ParseError(Exception):
-       """Raised when parsing fails."""
-       pass
-
-   class ValidationError(Exception):
-       """Raised when validation fails."""
-       pass
-   ```
-
-2. **Error Messages**
-   - Be specific and actionable
-   - Include context (line number, element name, etc.)
-   - Suggest fixes when possible
-
-3. **Error Handling**
-   - Catch specific exceptions, not generic `Exception`
-   - Don't silently swallow errors
-   - Log errors appropriately
-
-## Performance Considerations
-
-1. **Profiling Before Optimizing**
-   - Use `cProfile` to identify bottlenecks
-   - Optimize only proven slow paths
-
-2. **Common Optimizations**
-   - Use generators for large data sets
-   - Cache expensive computations
-   - Use appropriate data structures
-
-3. **Benchmarking**
-   - Write performance tests for critical paths
-   - Set performance targets
-   - Monitor performance over time
-
-## Security Best Practices
-
-1. **Input Validation**
-   - Validate all external input
-   - Sanitize file paths
-   - Limit resource consumption
-
-2. **XML Generation**
-   - Use safe XML libraries
-   - Escape special characters
-   - Validate generated XML
-
-3. **File Operations**
-   - Check file permissions
-   - Handle file system errors
-   - Use context managers for file I/O
-
-## AI Agent Workflow
-
-### Before Starting Work
-
-1. Read `CLAUDE.md` for project context
-2. Review existing code structure
-3. Check open issues and PRs
-4. Understand the user's requirements
-
-### During Development
-
-1. Write tests first (TDD approach)
-2. Implement in small increments
-3. Run tests frequently
-4. Keep commits focused and atomic
-
-### Before Committing
-
-1. Run full test suite: `make test`
-2. Check linting: `make lint`
-3. Format code: `make format`
-4. Update documentation
-5. Review changes thoroughly
-
-### Code Review Checklist
-
-- [ ] Code follows style guide
-- [ ] Tests are comprehensive
-- [ ] Documentation is updated
-- [ ] No security vulnerabilities
-- [ ] Performance is acceptable
-- [ ] Error handling is robust
-- [ ] Type hints are present
-- [ ] Docstrings are complete
-
-## Common Patterns
-
-### Parser Pattern
-```python
-class BaseParser:
-    """Base class for all parsers."""
-
-    def parse(self, text: str) -> Any:
-        """Parse text and return structured data."""
-        tokens = self.tokenize(text)
-        ast = self.build_ast(tokens)
-        return self.validate(ast)
-```
-
-### Generator Pattern
-```python
-class BaseGenerator:
-    """Base class for all generators."""
-
-    def generate(self, model: Any) -> str:
-        """Generate output from model."""
-        validated = self.validate(model)
-        return self.render(validated)
-```
-
-### Factory Pattern
-```python
-class DiagramFactory:
-    """Factory for creating diagram objects."""
-
-    @staticmethod
-    def create(diagram_type: str) -> Diagram:
-        """Create diagram of specified type."""
-        if diagram_type == "bdd":
-            return BlockDefinitionDiagram()
-        elif diagram_type == "ibd":
-            return InternalBlockDiagram()
-        else:
-            raise ValueError(f"Unknown diagram type: {diagram_type}")
-```
-
-## Resources
-
-- **Python Style Guide:** https://peps.python.org/pep-0008/
-- **Google Python Style Guide:** https://google.github.io/styleguide/pyguide.html
-- **Conventional Commits:** https://www.conventionalcommits.org/
-- **Semantic Versioning:** https://semver.org/
-- **pytest Documentation:** https://docs.pytest.org/
+**Version:** 1.0 | **Status:** Mandatory
 
 ---
 
-**Last Updated:** 2026-02-27
-**Status:** Initial version
+## Framework
+
+| Principle | Focus |
+|-----------|-------|
+| **C** — Clean | Single responsibility, self-documenting names |
+| **O** — Orthogonal | Independent components, injected dependencies |
+| **L** — Lean | Minimal transformations, no dead code |
+| **D** — Data-Driven | Explicit types, no NULLs, validated at boundaries |
+| **S** — Side Effects | Pure functions isolated, I/O explicit |
+
+---
+
+## C — Clean Code
+
+- One responsibility per function/class
+- Names explain intent (verb phrases for functions, nouns for classes)
+- No abbreviations, no generic names (`Manager`, `Helper`, `data`, `flag`)
+- Comments explain **WHY**, never WHAT
+- No commented-out code in version control
+
+**Hard limits:**
+- Max 20 lines per function
+- Cyclomatic complexity < 10
+- Max 4 parameters (use a dataclass/object for more)
+
+---
+
+## O — Orthogonal
+
+- Dependencies always injected via `__init__`, never instantiated internally
+- Interfaces are minimal and focused — one concern per interface
+- A change to one component must not require changes to unrelated components
+- Use `Protocol` or `ABC` for interface contracts
+
+---
+
+## L — Lean
+
+- Prefer a single efficient query over multiple queries + transformations
+- Extract complex blocks into named methods
+- No unused code, no speculative features
+- Minimise intermediate variables where clarity is not sacrificed
+
+---
+
+## D — Data-Driven
+
+- No `None` / `NULL` returns — use empty objects, `Optional` explicitly, or `Result` types
+- All function parameters and return types annotated
+- Validate all external inputs at system boundaries
+- Use `@dataclass` or `TypedDict` for data contracts
+
+**Result pattern (standard for failable operations):**
+```python
+@dataclass
+class Result:
+    success: bool
+    value: Any = None
+    errors: List[str] = field(default_factory=list)
+
+    @classmethod
+    def ok(cls, value): return cls(success=True, value=value)
+
+    @classmethod
+    def fail(cls, errors): return cls(success=False, errors=errors)
+```
+
+---
+
+## S — Side Effects
+
+- Pure functions (no I/O, no mutation) are the default
+- Functions with side effects (DB, file, network) are explicit and isolated
+- Never mutate input parameters
+- Side-effectful operations are composed at the service/orchestration layer only
+
+---
+
+## Standard Patterns
+
+### Service Composition
+```python
+class SomeService:
+    def __init__(self, repository: Repo, validator: Validator):
+        self._repository = repository
+        self._validator = validator
+
+    def do_thing(self, request: Request) -> Result:
+        validation = self._validator.validate(request)
+        if not validation.success:
+            return Result.fail(validation.errors)
+        entity = self._build_entity(request)          # pure
+        saved = self._repository.save(entity)          # impure, explicit
+        return Result.ok(saved)
+
+    def _build_entity(self, request: Request) -> Entity:  # pure helper
+        ...
+```
+
+### Transformation Pipeline
+```python
+def process(raw: RawData) -> Output:
+    cleaned   = clean(raw)
+    validated = validate(cleaned)
+    enriched  = enrich(validated)
+    return format_output(enriched)
+```
+
+---
+
+## Enforcement
+
+**Automated (CI must pass):**
+- `ruff` — linting and naming
+- `black` — formatting
+- `mypy` or `pyright` — type coverage
+- `pytest --cov` — minimum 80% coverage on business logic
+- Complexity check — cyclomatic complexity < 10
+
+**PR requirements:**
+- C.O.L.D compliance verified by reviewer
+- All automated checks pass
+- Tests included for new functionality
+
+**Exceptions:** Require written justification, tech lead approval, and a TODO with a tracking ticket.

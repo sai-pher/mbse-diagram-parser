@@ -1,5 +1,8 @@
 # Runtime dependencies
-# (none yet - will be added as needed)
+# (none for core parser)
+
+# Optional: Diagram generation
+# drawpyo>=0.2.0  # Uncomment for diagram generation support
 
 # Development dependencies
 pytest>=7.0

@@ -1,0 +1,10 @@
+# Web Application Architecture
+# Demonstrates component composition and process connections
+
+# Main application with sub-components
+{web application}-∆{frontend}, {backend}, {database}
+
+# Process connections for each component
+{frontend}-O(render UI)
+{backend}-O(process requests)
+{database}-O(store data)

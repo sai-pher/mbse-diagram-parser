@@ -1,0 +1,4 @@
+# Simple Data Processing Flow
+# Demonstrates a basic data pipeline
+
+(read input)->[raw data]->(validate data)->[clean data]->(process data)->[results]

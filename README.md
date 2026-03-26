@@ -13,35 +13,117 @@ A Python library for parsing MBSE text notation and generating Draw.io diagram f
 
 ## Installation
 
+### Core Parser Only
+
 ```bash
 pip install mbse-diagram-parser
 ```
 
-For development installation:
+### With Diagram Generation Support
+
+```bash
+pip install mbse-diagram-parser[generator]
+```
+
+### For Development
 
 ```bash
 git clone https://github.com/sai-pher/mbse-diagram-parser.git
 cd mbse-diagram-parser
-pip install -e ".[dev]"
+pip install -e ".[dev,generator]"
 ```
 
 ## Quick Start
 
-> **Note:** The library is under active development. Full examples and API documentation coming soon.
+```python
+from mbse_diagram_parser import MBSEParser
+
+# Define your system using text notation
+notation = """
+{calculator}-O(execute numerical operations)->[numerical results]
+{calculator}-∆{keypad}, {screen}, {processing chip}
+"""
+
+# Parse the notation
+parser = MBSEParser()
+diagram = parser.parse(notation)
+
+# Access parsed elements
+for element in diagram.elements:
+    print(f"{element.type.value}: {element.name}")
+
+# Access connections
+for connection in diagram.connections:
+    print(f"{connection.source} --{connection.type.value}--> {connection.target}")
+
+# Export to dictionary format
+data = parser.to_dict()
+```
+
+### Generate Draw.io Diagrams
 
 ```python
-from mbse_diagram_parser import parse_diagram
+from mbse_diagram_parser import MBSEDiagramGenerator, OutputFormat
 
-# Example usage will be added here
+# Define your system
+notation = """
+{calculator}-O(execute operations)->[results]
+{calculator}-∆{keypad}, {screen}
+"""
+
+# Generate Draw.io diagram
+generator = MBSEDiagramGenerator()
+output_files = generator.generate(
+    notation,
+    filename="my_diagram",
+    output_format=OutputFormat.DRAWIO,
+    output_dir="./output"
+)
+
+print(f"Generated: {output_files}")
 ```
+
+**Output Formats:**
+- `OutputFormat.DRAWIO` - Generate .drawio file only
+- `OutputFormat.PNG` - Generate PNG image (requires Draw.io CLI)
+- `OutputFormat.BOTH` - Generate both formats
 
 ## Notation Reference
 
-> **Note:** Detailed notation reference documentation is coming soon. The notation will support common MBSE diagram types including:
-> - Block Definition Diagrams (BDD)
-> - Internal Block Diagrams (IBD)
-> - Sequence Diagrams
-> - State Machine Diagrams
+The MBSE text notation uses simple symbols to define diagram elements and their relationships:
+
+### Elements
+
+- `{component}` - Component (rectangle)
+- `(process)` - Process (oval)
+- `[data]` - Data object (rounded rectangle)
+
+### Connections
+
+- `->` - Data flow arrow
+- `-O` - Process connection
+- `-∆` - Composition (sub-components)
+
+### Examples
+
+**Simple data flow:**
+```
+(read input)->[raw data]->(validate data)->[clean data]
+```
+
+**Component composition:**
+```
+{web application}-∆{frontend}, {backend}, {database}
+```
+
+**Complex system:**
+```
+{calculator}-O(execute numerical operations)->[numerical results]
+{calculator}-∆{keypad}, {screen}, {processing chip}
+{keypad}-O(input numbers)->[numbers]->(sum numbers)
+```
+
+See the [examples/](examples/) directory for more complete examples.
 
 ## Contributing
 

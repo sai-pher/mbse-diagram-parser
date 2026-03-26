@@ -1,0 +1,11 @@
+# Calculator System - MBSE Text Notation Example
+# This example demonstrates the text notation for a simple calculator system
+
+# Main component and its core process
+{calculator}-O(execute numerical operations)->[numerical results]
+
+# Component composition - calculator is composed of sub-components
+{calculator}-∆{keypad}, {screen}, {processing chip}
+
+# Detailed process flow starting from keypad
+{keypad}-O(input numbers)->[numbers]->(sum numbers)->[number]->(display result)O-{screen}
